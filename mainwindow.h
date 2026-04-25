@@ -8,6 +8,7 @@
 #include <QWidget>
 #include <QGridLayout>
 #include <QList>
+#include <QString>
 
 class MainWindow : public QMainWindow
 {
@@ -24,26 +25,25 @@ private slots:
     void clickBtn(int i);
 
 private:
-    QStackedWidget *stack;
-    QWidget *homePage;
-    QWidget *gamePage;
-
-    QLabel *labMode;
-    QLabel *labScore;
-    QGridLayout *gridLayout;
-    QList<QPushButton*> btnList;
-
-    int score;
-    bool isPractice;
-
-    QString rightStr;
-    int need;
-    int correctCount;
-
     void initHome();
     void initGame();
     void clearBtn();
     void createGrid(int type);
+    QStackedWidget *stack;
+    QWidget *homePage;
+    QWidget *gamePage;
+
+    QLabel *titleLabel;
+    QLabel *labMode;
+    QLabel *labScore;
+    QGridLayout *gridLayout;
+    QList<QPushButton*> btnList;
+    int score;
+    bool isPractice;
+
+    QString rightStr;
+    int needRightCnt;
+    int currentCorrect;
 };
 
 #endif // MAINWINDOW_H
