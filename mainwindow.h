@@ -10,9 +10,20 @@
 #include <QList>
 #include <QString>
 
+QT_BEGIN_NAMESPACE
+namespace Ui { class MainWindow; }
+QT_END_NAMESPACE
+
+struct Poem {
+    QString sentence;
+    int type;
+    QString source;
+};
+
 class MainWindow : public QMainWindow
 {
     Q_OBJECT
+
 public:
     explicit MainWindow(QWidget *parent = nullptr);
     ~MainWindow();
@@ -22,13 +33,15 @@ private slots:
     void challenge();
     void backHome();
     void stopGame();
-    void clickBtn(int i);
+    void clickBtn(QPushButton *b); // 声明必须和定义一致
 
 private:
     void initHome();
     void initGame();
     void clearBtn();
-    void createGrid(int type);
+    void createGrid(); // 无参声明，和cpp里的定义一致
+    Poem getRandomPoem();
+
     QStackedWidget *stack;
     QWidget *homePage;
     QWidget *gamePage;
@@ -38,12 +51,12 @@ private:
     QLabel *labScore;
     QGridLayout *gridLayout;
     QList<QPushButton*> btnList;
+
     int score;
     bool isPractice;
-
-    QString rightStr;
-    int needRightCnt;
-    int currentCorrect;
+    Poem currentPoem;
+    QString targetSentence;
+    int currentPos;
 };
 
 #endif // MAINWINDOW_H
