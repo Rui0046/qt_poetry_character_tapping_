@@ -41,6 +41,8 @@ private:
     void clearBtn();
     void createGrid(); // 无参声明，和cpp里的定义一致
     Poem getRandomPoem();
+protected:
+    void resizeEvent(QResizeEvent *event) override;
 
     QStackedWidget *stack;
     QWidget *homePage;

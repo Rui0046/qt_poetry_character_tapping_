@@ -9,9 +9,9 @@
 #include <QPixmap>
 #include <QPalette>
 #include <QFont>
-
-#define HOME_BG "images/home.jpg"
-#define GAME_BG "images/game.jpg"
+#include <QPainter>
+#define HOME_BG ":/images/home.png"
+#define GAME_BG ":/images/game.png"
 
 Poem poems[] = {
     {"空山新雨后",9,"王维《山居秋暝》"},
@@ -40,7 +40,6 @@ Poem poems[] = {
     {"远芳侵古道",9,"白居易《赋得古原草送别》"},
     {"千山鸟飞绝",9,"柳宗元《江雪》"},
     {"孤舟蓑笠翁",9,"柳宗元《江雪》"},
-    {"移舟泊烟渚",9,"孟浩然《宿建德江》"},
     {"野旷天低树",9,"孟浩然《宿建德江》"},
     {"绿树村边合",9,"孟浩然《过故人庄》"},
     {"开轩面场圃",9,"孟浩然《过故人庄》"},
@@ -48,7 +47,6 @@ Poem poems[] = {
     {"夜来风雨声",9,"孟浩然《春晓》"},
     {"白日依山尽",9,"王之涣《登鹳雀楼》"},
     {"欲穷千里目",9,"王之涣《登鹳雀楼》"},
-    {"泠泠七弦上",9,"刘长卿《听弹琴》"},
     {"日暮苍山远",9,"刘长卿《逢雪宿芙蓉山主人》"},
     {"柴门闻犬吠",9,"刘长卿《逢雪宿芙蓉山主人》"},
     {"红豆生南国",9,"王维《相思》"},
@@ -65,46 +63,41 @@ Poem poems[] = {
     {"白水绕东城",9,"李白《送友人》"},
     {"浮云游子意",9,"李白《送友人》"},
     {"落日故人情",9,"李白《送友人》"},
-    {"太乙近天都",9,"王维《终南山》"},
-    {"白云回望合",9,"王维《终南山》"},
-    {"分野中峰变",9,"王维《终南山》"},
-    {"寒随一夜去",9,"王湾《立春》"},
-    {"春逐五更来",9,"王湾《立春》"},
-    {"天意怜幽草",9,"李商隐《晚晴》"},
-    {"人间重晚晴",9,"李商隐《晚晴》"},
-    {"向晚意不适",9,"李商隐《登乐游原》"},
+    {"露从今夜白",9,"杜甫《月夜忆舍弟》"},
+    {"月是故乡明",9,"杜甫《月夜忆舍弟》"},
     {"夕阳无限好",9,"李商隐《登乐游原》"},
-    {"猿啼洞庭树",9,"马戴《楚江怀古》"},
-    {"人在木兰舟",9,"马戴《楚江怀古》"},
-    {"露气寒光集",9,"马戴《楚江怀古》"},
-    {"微阳下楚丘",9,"马戴《楚江怀古》"},
-    {"木落雁南度",9,"孟浩然《早寒江上有怀》"},
-    {"北风江上寒",9,"孟浩然《早寒江上有怀》"},
-    {"我家襄水曲",9,"孟浩然《早寒江上有怀》"},
-    {"遥隔楚云端",9,"孟浩然《早寒江上有怀》"},
-    {"林暗草惊风",9,"卢纶《塞下曲》"},
-    {"将军夜引弓",9,"卢纶《塞下曲》"},
-    {"平明寻白羽",9,"卢纶《塞下曲》"},
-    {"没在石棱中",9,"卢纶《塞下曲》"},
+    {"家书抵万金",9,"杜甫《春望》"},
+    {"白头搔更短",9,"杜甫《春望》"},
+    {"浑欲不胜簪",9,"杜甫《春望》"},
     {"月黑雁飞高",9,"卢纶《塞下曲》"},
     {"单于夜遁逃",9,"卢纶《塞下曲》"},
-    {"欲将轻骑逐",9,"卢纶《塞下曲》"},
     {"大雪满弓刀",9,"卢纶《塞下曲》"},
-    {"江静潮初落",9,"张循之《秋夜江行》"},
-    {"林昏瘴不开",9,"张循之《秋夜江行》"},
-    {"时有落花至",9,"刘昚虚《阙题》"},
-    {"远随流水香",9,"刘昚虚《阙题》"},
-    {"道由白云尽",9,"刘昚虚《阙题》"},
-    {"春与青溪长",9,"刘昚虚《阙题》"},
-    {"闲门向山路",9,"刘昚虚《阙题》"},
-    {"深柳读书堂",9,"刘昚虚《阙题》"},
-    {"孤山寺北贾亭西",9,"白居易《钱塘湖春行》"},
-    {"水面初平云脚低",9,"白居易《钱塘湖春行》"}
-};
+    {"好雨知时节",9,"杜甫《春夜喜雨》"},
+    {"当春乃发生",9,"杜甫《春夜喜雨》"},
+    {"随风潜入夜",9,"杜甫《春夜喜雨》"},
+    {"润物细无声",9,"杜甫《春夜喜雨》"},
+    {"野径云俱黑",9,"杜甫《春夜喜雨》"},
+    {"江船火独明",9,"杜甫《春夜喜雨》"},
+    {"晓看红湿处",9,"杜甫《春夜喜雨》"},
+    {"花重锦官城",9,"杜甫《春夜喜雨》"},
+    {"八月湖水平",9,"孟浩然《望洞庭湖赠张丞相》"},
+    {"涵虚混太清",9,"孟浩然《望洞庭湖赠张丞相》"},
+    {"气蒸云梦泽",9,"孟浩然《望洞庭湖赠张丞相》"},
+    {"波撼岳阳城",9,"孟浩然《望洞庭湖赠张丞相》"},
+    {"欲济无舟楫",9,"孟浩然《望洞庭湖赠张丞相》"},
+    {"端居耻圣明",9,"孟浩然《望洞庭湖赠张丞相》"},
+    {"坐观垂钓者",9,"孟浩然《望洞庭湖赠张丞相》"},
+    {"徒有羡鱼情",9,"孟浩然《望洞庭湖赠张丞相》"},
+
+    };
 
 Poem poems2[] = {
     {"秦时明月汉时关",12,"王昌龄《出塞》"},
     {"万里长征人未还",12,"王昌龄《出塞》"},
+    {"黄河远上白云间",12,"王之涣《凉州词》"},
+    {"一片孤城万仞山",12,"王之涣《凉州词》"},
+    {"羌笛何须怨杨柳",12,"王之涣《凉州词》"},
+    {"春风不度玉门关",12,"王之涣《凉州词》"},
     {"黄沙百战穿金甲",12,"王昌龄《从军行》"},
     {"不破楼兰终不还",12,"王昌龄《从军行》"},
     {"独在异乡为异客",12,"王维《九月九日忆山东兄弟》"},
@@ -115,6 +108,7 @@ Poem poems2[] = {
     {"飞流直下三千尺",12,"李白《望庐山瀑布》"},
     {"朝辞白帝彩云间",12,"李白《早发白帝城》"},
     {"千里江陵一日还",12,"李白《早发白帝城》"},
+    {"故人西辞黄鹤楼",12,"李白《黄鹤楼送孟浩然之广陵》"},
     {"天门中断楚江开",12,"李白《望天门山》"},
     {"孤帆一片日边来",12,"李白《望天门山》"},
     {"烟笼寒水月笼沙",12,"杜牧《泊秦淮》"},
@@ -139,13 +133,16 @@ Poem poems2[] = {
     {"留取丹心照汗青",12,"文天祥《过零丁洋》"},
     {"浩荡离愁白日斜",12,"龚自珍《己亥杂诗》"},
     {"落红不是无情物",12,"龚自珍《己亥杂诗》"},
+    {"千里莺啼绿映红",12,"杜牧《江南春》"},
+    {"水村山郭酒旗风",12,"杜牧《江南春》"},
+    {"南朝四百八十寺",12,"杜牧《江南春》"},
+    {"多少楼台烟雨中",12,"杜牧《江南春》"},
     {"月落乌啼霜满天",12,"张继《枫桥夜泊》"},
     {"姑苏城外寒山寺",12,"张继《枫桥夜泊》"},
     {"峨眉山月半轮秋",12,"李白《峨眉山月歌》"},
     {"夜发清溪向三峡",12,"李白《峨眉山月歌》"},
     {"一蓑烟雨任平生",12,"苏轼《定风波》"},
     {"竹杖芒鞋轻胜马",12,"苏轼《定风波》"},
-    {"大江东去浪淘尽",12,"苏轼《念奴娇·赤壁怀古》"},
     {"暖风熏得游人醉",12,"林升《题临安邸》"},
     {"直把杭州作汴州",12,"林升《题临安邸》"},
     {"山外青山楼外楼",12,"林升《题临安邸》"},
@@ -160,16 +157,14 @@ Poem poems2[] = {
     {"借问酒家何处有",12,"杜牧《清明》"},
     {"远上寒山石径斜",12,"杜牧《山行》"},
     {"停车坐爱枫林晚",12,"杜牧《山行》"},
-    {"春城无处不飞花",12,"韩翃《寒食》"},
-    {"日暮汉宫传蜡烛",12,"韩翃《寒食》"},
-    {"潮打空城寂寞回",12,"刘禹锡《石头城》"},
-    {"淮水东边旧时月",12,"刘禹锡《石头城》"},
-    {"山围故国周遭在",12,"刘禹锡《石头城》"},
     {"银烛秋光冷画屏",12,"杜牧《秋夕》"},
     {"轻罗小扇扑流萤",12,"杜牧《秋夕》"},
     {"天阶夜色凉如水",12,"杜牧《秋夕》"},
     {"卧看牵牛织女星",12,"杜牧《秋夕》"},
     {"唯有牡丹真国色",12,"刘禹锡《赏牡丹》"},
+    {"烟花三月下扬州",12,"李白《黄鹤楼送孟浩然之广陵》"},
+    {"孤帆远影碧空尽",12,"李白《黄鹤楼送孟浩然之广陵》"},
+    {"唯见长江天际流",12,"李白《黄鹤楼送孟浩然之广陵》"},
     {"花开时节动京城",12,"刘禹锡《赏牡丹》"},
     {"草木知春不久归",12,"韩愈《晚春》"},
     {"百般红紫斗芳菲",12,"韩愈《晚春》"},
@@ -178,13 +173,21 @@ Poem poems2[] = {
     {"沧海月明珠有泪",12,"李商隐《锦瑟》"},
     {"蓝田日暖玉生烟",12,"李商隐《锦瑟》"},
     {"庄生晓梦迷蝴蝶",12,"李商隐《锦瑟》"},
+    {"碧玉妆成一树高",12,"贺知章《咏柳》"},
+    {"万条垂下绿丝绦",12,"贺知章《咏柳》"},
+    {"不知细叶谁裁出",12,"贺知章《咏柳》"},
+    {"二月春风似剪刀",12,"贺知章《咏柳》"},
+    {"小荷才露尖尖角",12,"杨万里《小池》"},
+    {"早有蜻蜓立上头",12,"杨万里《小池》"},
     {"望帝春心托杜鹃",12,"李商隐《锦瑟》"},
     {"锦瑟无端五十弦",12,"李商隐《锦瑟》"},
     {"一弦一柱思华年",12,"李商隐《锦瑟》"},
     {"蓬山此去无多路",12,"李商隐《无题》"},
     {"青鸟殷勤为探看",12,"李商隐《无题》"},
     {"相见时难别亦难",12,"李商隐《无题》"},
-    {"东风无力百花残",12,"李商隐《无题》"}
+    {"东风无力百花残",12,"李商隐《无题》"},
+    {"孤山寺北贾亭西",12,"白居易《钱塘湖春行》"},
+    {"水面初平云脚低",12,"白居易《钱塘湖春行》"}
 };
 
 int poemNum = sizeof(poems)/sizeof(Poem) + sizeof(poems2)/sizeof(Poem);
@@ -209,41 +212,57 @@ QStringList badChars = {
     "弓","马","霜","雪","尘","烟","霄","汉"
 };
 
+// 背景图片版
 void setBg(QWidget *w, QString path)
 {
-    QPalette palette;
     QPixmap pix(path);
-    if(!pix.isNull())
-    {
-        pix = pix.scaled(w->size(), Qt::KeepAspectRatioByExpanding, Qt::SmoothTransformation);
-        palette.setBrush(QPalette::Window, QBrush(pix));
-    }
-    else
-    {
-        palette.setColor(QPalette::Window, QColor(245,242,235));
-    }
+    if (pix.isNull()) return; // 图片加载失败就退出
+
+    // 1. 先按窗口大小等比缩放图片（保持比例，不拉伸）
+    QPixmap scaledPix = pix.scaled(w->size(), Qt::KeepAspectRatioByExpanding, Qt::SmoothTransformation);
+
+    // 2. 创建一个和窗口一样大的空画布
+    QPixmap canvas(w->size());
+    canvas.fill(Qt::transparent); // 先设为透明
+
+    // 3. 把缩放后的图片居中画在画布上
+    QPainter painter(&canvas);
+    int x = (w->width() - scaledPix.width()) / 2;
+    int y = (w->height() - scaledPix.height()) / 2;
+    painter.drawPixmap(x, y, scaledPix);
+
+    // 4. 把画布设为背景（这样就不会平铺了）
+    QPalette palette;
+    palette.setBrush(QPalette::Window, QBrush(canvas));
     w->setPalette(palette);
     w->setAutoFillBackground(true);
 }
+void MainWindow::resizeEvent(QResizeEvent *event)
+{
+    QMainWindow::resizeEvent(event);
+    setBg(homePage, HOME_BG);
+    setBg(gamePage, GAME_BG);
+}
 
+// 按钮色 #8DB7A2
 QString getBtnStyle()
 {
     return R"(
         QPushButton{
-            background-color:#D2B48C;
-            border:2px solid #8B4513;
+            background-color:#8DB7A2;
+            border:2px solid #6A9988;
             border-radius:8px;
-            color:#5D4037;
+            color:#FFFFFF;
             font-size:24px;
             font-weight:bold;
             font-family:"楷体";
         }
         QPushButton:hover{
-            background-color:#C4A882;
+            background-color:#7DAA92;
         }
         QPushButton:disabled{
-            background-color:#E0D2BC;
-            color:#999999;
+            background-color:#B2CFC5;
+            color:#FFFFFF;
         }
     )";
 }
@@ -252,16 +271,16 @@ QString getBigBtnStyle()
 {
     return R"(
         QPushButton{
-            background-color:#D2B48C;
-            border:2px solid #8B4513;
+            background-color:#8DB7A2;
+            border:2px solid #6A9988;
             border-radius:12px;
-            color:#5D4037;
+            color:#FFFFFF;
             font-size:20px;
             font-weight:bold;
             font-family:"楷体";
         }
         QPushButton:hover{
-            background-color:#C4A882;
+            background-color:#7DAA92;
         }
     )";
 }
@@ -270,15 +289,15 @@ QString getSmallBtnStyle()
 {
     return R"(
         QPushButton{
-            background-color:#D2B48C;
-            border:2px solid #8B4513;
+            background-color:#8DB7A2;
+            border:2px solid #6A9988;
             border-radius:6px;
-            color:#5D4037;
+            color:#FFFFFF;
             font-size:16px;
             font-family:"楷体";
         }
         QPushButton:hover{
-            background-color:#C4A882;
+            background-color:#7DAA92;
         }
     )";
 }
@@ -290,7 +309,7 @@ void showPoemInfo(Poem p)
     QMessageBox msgBox;
     msgBox.setWindowTitle("诗词赏析");
     msgBox.setText(info);
-    QFont msgFont("微软雅黑",14);
+    QFont msgFont("楷体",14);
     msgBox.setFont(msgFont);
     msgBox.exec();
 }
@@ -335,7 +354,7 @@ void MainWindow::initHome()
     titleLabel = new QLabel("点字成诗");
     QFont titleFont("楷体", 48, QFont::Bold);
     titleLabel->setFont(titleFont);
-    titleLabel->setStyleSheet("color:#8B4513;");
+    titleLabel->setStyleSheet("color:#206864;");
     titleLabel->setAlignment(Qt::AlignCenter);
 
     QPushButton *b1 = new QPushButton("练习模式");
@@ -358,6 +377,7 @@ void MainWindow::initHome()
 void MainWindow::initGame()
 {
     setBg(gamePage, GAME_BG);
+
     QVBoxLayout *v = new QVBoxLayout(gamePage);
     QHBoxLayout *h = new QHBoxLayout;
 
@@ -420,7 +440,7 @@ void MainWindow::createGrid()
     std::shuffle(list.begin(), list.end(), std::mt19937(std::random_device{}()));
     int col = (now.type == 9) ? 3 : 4;
 
-    for (int i = 0; i < now.type; i++)
+    for (int i = 0; i < list.size(); i++)
     {
         QPushButton *b = new QPushButton(list[i]);
         b->setFixedSize(80,80);
@@ -483,16 +503,13 @@ void MainWindow::clickBtn(QPushButton *b)
 
     if(selectText == rightChar)
     {
-        // 选对
         b->setEnabled(false);
         currentPos++;
 
-        // 整句完成
         if(currentPos >= targetSentence.length())
         {
             score++;
             labScore->setText("得分：" + QString::number(score));
-            // 答对也弹注释
             showPoemInfo(currentPoem);
             QTimer::singleShot(600, this, [=](){
                 createGrid();
@@ -501,19 +518,16 @@ void MainWindow::clickBtn(QPushButton *b)
     }
     else
     {
-        // 选错：直接弹全诗赏析
         showPoemInfo(currentPoem);
 
         if(isPractice)
         {
-            // 练习模式：答错直接下一题
             QTimer::singleShot(600, this, [=](){
                 createGrid();
             });
         }
         else
         {
-            // 闯关模式：选错直接结束
             QMessageBox::critical(this,"闯关失败","本题答错，游戏结束！");
             stopGame();
         }
