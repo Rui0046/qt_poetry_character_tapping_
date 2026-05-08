@@ -33,14 +33,15 @@ private slots:
     void challenge();
     void backHome();
     void stopGame();
-    void clickBtn(QPushButton *b); // 声明必须和定义一致
+    void clickBtn(QPushButton *b);
 
 private:
     void initHome();
     void initGame();
     void clearBtn();
-    void createGrid(); // 无参声明，和cpp里的定义一致
+    void createGrid();
     Poem getRandomPoem();
+
 protected:
     void resizeEvent(QResizeEvent *event) override;
 

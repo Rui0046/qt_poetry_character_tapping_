@@ -2,5 +2,7 @@
     <qresource prefix="/">
         <file>images/game.png</file>
         <file>images/home.png</file>
+        <file>sound/right.wav</file>
+        <file>sound/wrong.wav</file>
     </qresource>
 </RCC>

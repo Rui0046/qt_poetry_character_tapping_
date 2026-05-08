@@ -10,6 +10,8 @@
 #include <QPalette>
 #include <QFont>
 #include <QPainter>
+#include <QSoundEffect>
+
 #define HOME_BG ":/images/home.png"
 #define GAME_BG ":/images/game.png"
 
@@ -88,7 +90,6 @@ Poem poems[] = {
     {"端居耻圣明",9,"孟浩然《望洞庭湖赠张丞相》"},
     {"坐观垂钓者",9,"孟浩然《望洞庭湖赠张丞相》"},
     {"徒有羡鱼情",9,"孟浩然《望洞庭湖赠张丞相》"},
-
     };
 
 Poem poems2[] = {
@@ -212,31 +213,24 @@ QStringList badChars = {
     "弓","马","霜","雪","尘","烟","霄","汉"
 };
 
-// 背景图片版
 void setBg(QWidget *w, QString path)
 {
     QPixmap pix(path);
-    if (pix.isNull()) return; // 图片加载失败就退出
+    if (pix.isNull()) return;
 
-    // 1. 先按窗口大小等比缩放图片（保持比例，不拉伸）
     QPixmap scaledPix = pix.scaled(w->size(), Qt::KeepAspectRatioByExpanding, Qt::SmoothTransformation);
-
-    // 2. 创建一个和窗口一样大的空画布
     QPixmap canvas(w->size());
-    canvas.fill(Qt::transparent); // 先设为透明
-
-    // 3. 把缩放后的图片居中画在画布上
+    canvas.fill(Qt::transparent);
     QPainter painter(&canvas);
     int x = (w->width() - scaledPix.width()) / 2;
     int y = (w->height() - scaledPix.height()) / 2;
     painter.drawPixmap(x, y, scaledPix);
-
-    // 4. 把画布设为背景（这样就不会平铺了）
     QPalette palette;
     palette.setBrush(QPalette::Window, QBrush(canvas));
     w->setPalette(palette);
     w->setAutoFillBackground(true);
 }
+
 void MainWindow::resizeEvent(QResizeEvent *event)
 {
     QMainWindow::resizeEvent(event);
@@ -244,7 +238,6 @@ void MainWindow::resizeEvent(QResizeEvent *event)
     setBg(gamePage, GAME_BG);
 }
 
-// 按钮色 #8DB7A2
 QString getBtnStyle()
 {
     return R"(
@@ -302,7 +295,6 @@ QString getSmallBtnStyle()
     )";
 }
 
-// 弹出统一赏析弹窗
 void showPoemInfo(Poem p)
 {
     QString info = "📜 完整诗句\n「" + p.sentence + "」\n\n🏷 出处\n" + p.source;
@@ -340,13 +332,14 @@ MainWindow::MainWindow(QWidget *parent)
 
     initHome();
     initGame();
+    setBg(homePage, HOME_BG);
+    setBg(gamePage, GAME_BG);
 }
 
 MainWindow::~MainWindow() {}
 
 void MainWindow::initHome()
 {
-    setBg(homePage, HOME_BG);
     QVBoxLayout *v = new QVBoxLayout(homePage);
     v->setAlignment(Qt::AlignCenter);
     v->setSpacing(30);
@@ -376,8 +369,6 @@ void MainWindow::initHome()
 
 void MainWindow::initGame()
 {
-    setBg(gamePage, GAME_BG);
-
     QVBoxLayout *v = new QVBoxLayout(gamePage);
     QHBoxLayout *h = new QHBoxLayout;
 
@@ -430,11 +421,21 @@ void MainWindow::createGrid()
     for (QChar c : now.sentence)
         list << QString(c);
 
+    // 选诗句中没有的字作为干扰字
+    QString usedChars = now.sentence;
     int add = (now.type == 9) ? 4 : 5;
     for (int i = 0; i < add; i++)
     {
-        int r = QRandomGenerator::global()->bounded(badChars.size());
-        list << badChars[r];
+        int r;
+        QString ch;
+        // 循环找一个没被诗句用过的干扰字
+        do {
+            r = QRandomGenerator::global()->bounded(badChars.size());
+            ch = badChars[r];
+        } while (usedChars.contains(ch));
+
+        list << ch;
+        usedChars += ch;
     }
 
     std::shuffle(list.begin(), list.end(), std::mt19937(std::random_device{}()));
@@ -494,6 +495,26 @@ void MainWindow::stopGame()
     backHome();
 }
 
+// 音效函数
+void playRightSound() {
+    QSoundEffect *snd = new QSoundEffect;
+    snd->setSource(QUrl("qrc:/sound/right.wav"));
+    snd->setVolume(1.0f);
+    snd->play();
+    QObject::connect(snd, &QSoundEffect::playingChanged, [=]() {
+        if (!snd->isPlaying()) snd->deleteLater();
+    });
+}
+void playWrongSound() {
+    QSoundEffect *snd = new QSoundEffect;
+    snd->setSource(QUrl("qrc:/sound/wrong.wav"));
+    snd->setVolume(1.0f);
+    snd->play();
+    QObject::connect(snd, &QSoundEffect::playingChanged, [=]() {
+        if (!snd->isPlaying()) snd->deleteLater();
+    });
+}
+
 void MainWindow::clickBtn(QPushButton *b)
 {
     if(!b->isEnabled()) return;
@@ -510,6 +531,7 @@ void MainWindow::clickBtn(QPushButton *b)
         {
             score++;
             labScore->setText("得分：" + QString::number(score));
+            playRightSound();
             showPoemInfo(currentPoem);
             QTimer::singleShot(600, this, [=](){
                 createGrid();
@@ -518,6 +540,7 @@ void MainWindow::clickBtn(QPushButton *b)
     }
     else
     {
+        playWrongSound();
         showPoemInfo(currentPoem);
 
         if(isPractice)
@@ -528,7 +551,7 @@ void MainWindow::clickBtn(QPushButton *b)
         }
         else
         {
-            QMessageBox::critical(this,"闯关失败","本题答错，游戏结束！");
+            QMessageBox::critical(this,"闯关失败","答题错误，游戏结束！");
             stopGame();
         }
     }
